@@ -18,7 +18,7 @@ module('Integration | Component | data-provider', function(hooks) {
     manualSetup(this);
   });
 
-  test('should make query and provide a collection of data (positional params)', async function(assert) {
+  test('should findAll and provide a collection of data (positional params)', async function(assert) {
     // ARRANGE
     let users = [
       make('user', { name: 'Huey' }),
@@ -29,8 +29,7 @@ module('Integration | Component | data-provider', function(hooks) {
 
     // ACT
     await this.render(hbs`
-      {{#data-provider
-        modelName="user"
+      {{#data-provider "user"
         as |dp|
       }}
         {{#each dp.data as |user|}}
@@ -45,7 +44,7 @@ module('Integration | Component | data-provider', function(hooks) {
     assert.dom('.user-name:nth-child(3)').hasText('Louie');
   });
 
-  test('should refetch if attributes have changed', async function(assert) {
+  test('should refetch if attributes have changed (implied query)', async function(assert) {
     // ARRANGE
     const ducks = [
       make('user', { name: 'Huey' }),
@@ -64,9 +63,7 @@ module('Integration | Component | data-provider', function(hooks) {
 
     // ACT
     await this.render(hbs`
-      {{#data-provider
-        modelName="user"
-        storeMethod="query"
+      {{#data-provider "user"
         query=query
         as |dp|
       }}
@@ -114,7 +111,6 @@ module('Integration | Component | data-provider', function(hooks) {
     // ACT
     await this.render(hbs`
       {{#data-provider "user"
-        storeMethod="query"
         query=query
         as |dp|
       }}
@@ -149,7 +145,7 @@ module('Integration | Component | data-provider', function(hooks) {
     assert.dom('.user-name:nth-child(3)').hasText('Theodore');
   });
 
-  test('should provide data to using different store method (peekAll)', async function(assert) {
+  test('should provide data to using different store method and manual properties (peekAll)', async function(assert) {
     // ARRANGE - put data straight into store
     make('user', { name: 'Huey' });
     make('user', { name: 'Dewey' });
@@ -207,7 +203,6 @@ module('Integration | Component | data-provider', function(hooks) {
     // ACT
     await this.render(hbs`
       {{#data-provider "user"
-        storeMethod="query"
         query=(hash type="chipmunks")
         as |dp|
       }}
@@ -238,7 +233,6 @@ module('Integration | Component | data-provider', function(hooks) {
     // ACT 1
     await this.render(hbs`
       {{#data-provider "user"
-        storeMethod="query"
         query=(hash type="chipmunks")
         as |dp|
       }}

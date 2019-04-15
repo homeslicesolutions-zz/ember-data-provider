@@ -10,7 +10,7 @@ export default Component.extend({
 
   modelName:   '',
   recordId:    null,
-  storeMethod: 'findAll',
+  storeMethod: null,
   query:       null,
   options:     null,
   throwError:  false,
@@ -18,6 +18,18 @@ export default Component.extend({
   isLoading: false,
   data:      computed(function() { return !this.recordId ? [] : null; }),
   errors:    computed(function() { return []; }),
+
+  /**
+   * Returning the inferred store method by query and record ID Properties
+   * @returns {String:[query,queryRecord,findRecord,findAll]}
+   */
+  inferredStoreMethod: computed('query,recordId', function() {
+    if (this.query) {
+      return this.recordId ? 'queryRecord' : 'query';
+    }
+
+    return this.recordId ? 'findRecord' : 'findAll';
+  }),
 
   didReceiveAttrs() {
     this.send('fetch');
@@ -30,18 +42,19 @@ export default Component.extend({
   
       // Set loading
       this.set('isLoading', true);
+
+      // Store Method
+      const storeMethod = this.storeMethod || this.inferredStoreMethod;
   
       // Format correct method signature if they have a "recordId"
       const args = [this.modelName];
       if (this.recordId) args.push(this.recordId);
       if (this.query) args.push(this.query);
       if (this.options) args.push(this.options);
-
-      console.log('args', this.storeMethod, this.query);
   
       // Dispatch fetch action
       try {
-        const data = await this.store[this.storeMethod](...args);
+        const data = await this.store[storeMethod](...args);
         
         this.set('data', data);
       } catch(e) {
@@ -71,5 +84,5 @@ export default Component.extend({
     {{/if}}
   `
 }).reopenClass({
-  positionalParams: ['modelName', 'recordId', 'storeMethod'],
+  positionalParams: ['modelName', 'recordId'],
 })
