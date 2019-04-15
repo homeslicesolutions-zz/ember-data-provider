@@ -1,3 +1,22 @@
-<h2 id="title">Welcome to Ember</h2>
+<h2 id="title">Ember Data Provider Component</h2>
+
+{{#data-provider
+  modelName="user"
+  as |dp|
+}}
+  <ul>
+    {{#each dp.data as |user|}}
+      <li>{{user.name}}</li>
+    {{/each}}
+  </ul>
+
+  <button {{action "addChipmunk"}}>
+    Add Chipmunk
+  </button>
+
+  <button {{action dp.reload}}>
+    Reload List
+  </button>
+{{/data-provider}}
 
 {{outlet}}
