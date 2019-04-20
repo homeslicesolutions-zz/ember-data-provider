@@ -4,19 +4,23 @@
   modelName="user"
   as |dp|
 }}
-  <ul>
-    {{#each dp.data as |user|}}
-      <li>{{user.name}}</li>
-    {{/each}}
-  </ul>
+  {{#if dp.isLoading}}
+    Loading...
+  {{else}}
+    <ul>
+      {{#each dp.data as |user|}}
+        <li>{{user.name}}</li>
+      {{/each}}
+    </ul>
 
-  <button {{action "addChipmunk"}}>
-    Add Chipmunk
-  </button>
+    <button {{action "addChipmunk"}}>
+      Add Chipmunk
+    </button>
 
-  <button {{action dp.reload}}>
-    Reload List
-  </button>
+    <button {{action dp.reload}}>
+      Reload List
+    </button>
+  {{/if}}
 {{/data-provider}}
 
 {{outlet}}
